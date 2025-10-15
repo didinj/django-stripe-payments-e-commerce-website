@@ -1,0 +1,18 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+<div class="container">
+  <h2 class="text-center mt-4">Our Products</h2>
+  <div class="product-grid">
+    {% for product in products %}
+    <div class="product-card">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}" />
+      <h3>{{ product.name }}</h3>
+      <p>{{ product.description|truncatechars:100 }}</p>
+      <p class="price">{{ product.formatted_price }}</p>
+      <a href="{% url 'cart_add' product.id %}" class="add-to-cart"
+        >Add to Cart</a
+      >
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

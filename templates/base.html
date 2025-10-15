@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}My Django Shop{% endblock %}</title>
+    <meta
+      name="description"
+      content="{% block meta_desc %}A simple Django e-commerce demo with Stripe Checkout.{% endblock %}"
+    />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'products/css/products.css' %}" />
+
+    <!-- Stripe.js (loaded early) -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'store:product_list' %}">Djamware Shop</a>
+        <nav class="nav">
+          <a href="{% url 'store:product_list' %}">Products</a>
+          <a href="{% url 'store:cart_detail' %}" id="cart-link"
+            >Cart (<span id="cart-count"
+              >{{ request.session.cart|length|default:0 }}</span
+            >)</a
+          >
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li class="msg {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %} {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        &copy; {{ now.year }} Djamware Shop · Built with Django & Stripe
+      </div>
+    </footer>
+
+    <!-- Shared JS (CSRF helpers, small UI utilities) -->
+    <script>
+      // Simple helper to read cookie (Django CSRF cookie name 'csrftoken')
+      function getCookie(name) {
+        const v = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith(name + "="));
+        return v ? decodeURIComponent(v.split("=")[1]) : null;
+      }
+      const CSRF_TOKEN = getCookie("csrftoken");
+    </script>
+
+    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/checkout.js' %}"></script>
+
+    {% block body_extra %}{% endblock %}
+  </body>
+</html>
